@@ -1,17 +1,51 @@
-import { Request, Response } from 'express';
-import { createAccount } from '../services/accountService';
+import { Request, Response, NextFunction } from "express";
+import { createAccount } from "../services/accountService";
+import { IAccount } from "../types/accountType";
+import mongoose from "mongoose";
 
-export const createAccountHandler = async (req: Request, res: Response) => {
+export const createAccountHandler = async (
+  req: Request<{}, {}, Omit<IAccount, "accountNumber">>,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    console.log('createAccountHandler', req.body);
-    const account = await createAccount(req.body);
-    if (!account) {
-      res.status(400).json({ message: 'Account creation failed' }); 
+    // Extra safety: Handle empty body
+    if (!req.body || Object.keys(req.body).length === 0) {
+      res.status(400).json({
+        status: "error",
+        message: "Request body cannot be empty.",
+      });
       return;
-    } 
-    res.status(201).json({ message: 'Account created successfully', account });
-  } catch (error) { 
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    res.status(500).json({message: 'Failed to create account', error: errorMessage });
+    }
+
+    const newAccount = await createAccount(req.body);
+
+    res.status(201).json({
+      status: "success",
+      message: "Your account has been created successfully",
+      data: newAccount,
+    });
+  } catch (err: any) {
+    //Handle Mongoose validation errors
+    if (err instanceof mongoose.Error.ValidationError) {
+      const errors = Object.values(err.errors).map((e: any) => e.message);
+      res.status(400).json({
+        status: "error",
+        message: errors,
+      });
+      return;
+    }
+
+    //  Handle duplicate email/phone errors from service
+    if (err.message?.includes("already exists")) {
+      res.status(400).json({
+        status: "error",
+        message: err.message,
+      });
+      return;
+    }
+
+    //  Fallback: Internal server error
+    next(new Error("Failed to create account: " + err?.message));
   }
 };
