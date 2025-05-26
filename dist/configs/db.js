@@ -9,10 +9,10 @@ const config_1 = __importDefault(require("./config"));
 const connectDB = async () => {
     try {
         await mongoose_1.default.connect(config_1.default.MONGODB_URI);
-        console.log('✅ MongoDB of the Last code bender connected successfully');
+        console.log('MongoDB of the Last code bender connected successfully');
     }
     catch (error) {
-        console.error('❌ MongoDB connection failed:', error);
+        console.error(' MongoDB connection failed:', error);
         process.exit(1);
     }
 };

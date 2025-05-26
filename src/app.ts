@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 import express, { Application } from "express";
 import morgan from "morgan";
 import accountRoutes from "./routes/accountRoute";
+import ledgerRoute from "./routes/ledgerRoute";
+import cardRoute from "./routes/cardRoute";
 import { errorHandler } from "./middlewares/errorHandler";
 
 ;
@@ -16,8 +18,9 @@ app.use(morgan("dev"));
 app.use(errorHandler);
 
 // Routes
-app.use("/api/account", accountRoutes);
-
+app.use('/api/accounts', accountRoutes);
+app.use('/api/ledger', accountRoutes);
+app.use('/api/card', accountRoutes);
 
 
 
