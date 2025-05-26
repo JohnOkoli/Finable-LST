@@ -8,12 +8,16 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 // Routes
-app.use('/api/accounts', accountRoutes);
+app.use('/api', accountRoutes);
 app.use('/api/ledger', ledgerRoutes);
 app.use('/api/card', cardRoutes);
 app.use(errorHandler);
+// Base route
+app.get("/", (_req, res) => {
+  res.send("Route working...");
+});
 
 // 404 handler
 app.use((req, res) => {

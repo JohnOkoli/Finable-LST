@@ -1,21 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import { IAccount } from '../types/accountType';  
 
-export interface IAccount extends Document {
-    firstName: string;
-    surname: string;
-    email: string;
-    phoneNumber: string;
-    dateOfBirth: string;
-    address: string;
-    accountNumber: string;
-    cardNumber: string;
-    cvv: string;
-    expiryDate: string;
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-const AccountSchema: Schema = new Schema(
+const AccountSchema  = new Schema<IAccount>(
   {
     firstName: { type: String, required: true, trim: true },
     surname: { type: String, required: true, trim: true },

@@ -1,5 +1,5 @@
 import Account from '../models/accountModel';
-import { IAccount } from '../models/accountModel';
+import { IAccount } from '../types/accountType';
 import { encrypt } from '../Utils/crypto';
 import { generateAccountNumber } from '../Utils/generator';
 import { generateCard } from './cardService';
@@ -41,5 +41,5 @@ export const createAccount = async (input: CreateAccountInput): Promise<IAccount
 };
 
 export const getAllAccounts = async (): Promise<IAccount[]> => {
-  return Account.find();
+  return await Account.find();
 };
